@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>D:\CGHomework\Homework1\03 Rendering a Cube\03 Rendering a Cube(2015 Win7).exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>D:\CGHomework\Homework1\03 Rendering a Cube\HLSL\Cube_PS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\CGHomework\Homework1\03 Rendering a Cube\HLSL\Cube_VS.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

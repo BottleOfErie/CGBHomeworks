@@ -1,5 +1,5 @@
 import random
-file=open('《源》字图元数据.txt')
+file=open('test.obj')
 line = ""
 color=[]
 while True:
@@ -7,6 +7,8 @@ while True:
    if line =="":
       break
    if line[0] == 'v':
+      if(line[1]!=' '):
+         continue
       line = line[2:len(line)-1]
       for i in range(0,len(line)):
          if line[i] == " ":
@@ -18,7 +20,7 @@ while True:
       index = 0
       for i in range(1,len(line)):
          if line[i] == ' ':
-            for j in range(1,5):
+            for j in range(1,7):
                if line[i+j] != "/":
                   f[index]*=10
                   f[index]+=int(line[i+j])
