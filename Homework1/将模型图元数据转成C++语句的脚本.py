@@ -1,5 +1,5 @@
 import random
-file=open('test.obj')
+file=open('summary.obj')
 line = ""
 color=[]
 while True:
