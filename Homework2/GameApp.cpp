@@ -54,7 +54,9 @@ void GameApp::DrawScene()
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), reinterpret_cast<const float*>(&black));
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	const int N = 15;
+	const int N = 30;
+	const float dx = -250.0f, dy = -200.0f ,dz=0.0f;
+	DirectX::XMMATRIX mTranslateCamera = XMMatrixTranslation(dx, dy, dz);
 
 	for (int i = 1; i <= N; i++)
 	{
@@ -64,7 +66,7 @@ void GameApp::DrawScene()
 			DirectX::XMMATRIX mScale = XMMatrixScaling(scale, scale, scale);
 			DirectX::XMMATRIX mRotate = XMMatrixRotationX(angle) * XMMatrixRotationY(angle);
 			DirectX::XMMATRIX mTranslate = XMMatrixTranslation((i - 7.5f) * 35.5f, 0, (j - 7.5f) * 35.5f);
-			m_CBuffer.world = XMMatrixTranspose(mScale * mRotate * mTranslate); // mul(vec, mat) 中为行向量，矩阵右乘，顺序SRT, 参考https://www.cnblogs.com/X-Jun/p/9808727.html#_lab2_1_1
+			m_CBuffer.world = XMMatrixTranspose(mScale * mRotate * mTranslate *mTranslateCamera); // mul(vec, mat) 中为行向量，矩阵右乘，顺序SRT, 参考https://www.cnblogs.com/X-Jun/p/9808727.html#_lab2_1_1
 			// 更新常量缓冲区，让立方体转起来
 			D3D11_MAPPED_SUBRESOURCE mappedData;
 			HR(m_pd3dImmediateContext->Map(m_pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
@@ -73,16 +75,16 @@ void GameApp::DrawScene()
 			m_pd3dImmediateContext->DrawIndexed(name->GetIndexCount(), 0, 0);// 通过对象获取索引个数、、、、、、、、、、、、、、、、、
 
 			srand(i * j + 1);
-			DirectX::XMMATRIX mScaleChild = XMMatrixScaling(0.5f, 0.5f, 0.5f);
-			DirectX::XMMATRIX mTranslateChild = XMMatrixTranslation(2.5f, 0, 0);
-			for (int k = 1; k <= 2 + rand() % 3; k++)
+			DirectX::XMMATRIX mScaleChild = XMMatrixScaling(0.07f, 0.07f, 0.07f);
+			DirectX::XMMATRIX mTranslateChild = XMMatrixTranslation(10.0f, 10.0f, 10.0f);
+			for (int k = 1; k <= 5; k++)
 			{
-				DirectX::XMMATRIX mRotateChild = XMMatrixRotationX(rand() + angle) * XMMatrixRotationY(rand() + angle) * XMMatrixRotationY(rand() + angle);
-				m_CBuffer.world = XMMatrixTranspose(mScaleChild * mTranslateChild * mScale * mRotateChild * mTranslate);
+				DirectX::XMMATRIX mRotateChild = XMMatrixRotationX(angle * rand() / RAND_MAX * 2.0f) * XMMatrixRotationY(angle * rand() / RAND_MAX * 2.0f);
+				m_CBuffer.world = XMMatrixTranspose(mScaleChild * mTranslateChild * mRotateChild   * mTranslate *mTranslateCamera);
 
-				D3D11_MAPPED_SUBRESOURCE mappedData;
-				HR(m_pd3dImmediateContext->Map(m_pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-				memcpy_s(mappedData.pData, sizeof(m_CBuffer), &m_CBuffer, sizeof(m_CBuffer));
+				D3D11_MAPPED_SUBRESOURCE mappedData1;
+				HR(m_pd3dImmediateContext->Map(m_pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData1));
+				memcpy_s(mappedData1.pData, sizeof(m_CBuffer), &m_CBuffer, sizeof(m_CBuffer));
 				m_pd3dImmediateContext->Unmap(m_pConstantBuffer.Get(), 0);
 				m_pd3dImmediateContext->DrawIndexed(name->GetIndexCount(), 0, 0);// 通过对象获取索引个数、、、、、、、、、、、、、、、、、
 			}
