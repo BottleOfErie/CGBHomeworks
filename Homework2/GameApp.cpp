@@ -42,7 +42,7 @@ void GameApp::OnResize()
 
 void GameApp::UpdateScene(float dt)
 {
-	angle += 2.0f * dt;
+	angle += 1.0f * dt;
 }
 
 void GameApp::DrawScene()
@@ -54,8 +54,8 @@ void GameApp::DrawScene()
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), reinterpret_cast<const float*>(&black));
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	const int N = 30;
-	const float dx = -250.0f, dy = -200.0f ,dz=0.0f;
+	const int N = 15;
+	const float dx = -30.0f, dy = 10.0f ,dz=100.0f;
 	DirectX::XMMATRIX mTranslateCamera = XMMatrixTranslation(dx, dy, dz);
 
 	for (int i = 1; i <= N; i++)

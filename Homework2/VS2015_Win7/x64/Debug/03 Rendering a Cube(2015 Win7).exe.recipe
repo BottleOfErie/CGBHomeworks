@@ -2,15 +2,15 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\CGHomework\Homework2\03 Rendering a Cube(2015 Win7).exe</FullPath>
+      <FullPath>D:\fun\CGBHomeworks\Homework2\03 Rendering a Cube(2015 Win7).exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>D:\CGHomework\Homework2\HLSL\Cube_PS.cso</FullPath>
+      <FullPath>D:\fun\CGBHomeworks\Homework2\HLSL\Cube_PS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>D:\CGHomework\Homework2\HLSL\Cube_VS.cso</FullPath>
+      <FullPath>D:\fun\CGBHomeworks\Homework2\HLSL\Cube_VS.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />
