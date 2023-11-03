@@ -1,0 +1,39 @@
+﻿  GameApp.cpp
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x8d 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x90 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0xc1 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0xc2 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0xc3 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0xc5 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0xc7 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0xc8 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0xf6 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0xf8 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0xf9 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0xfc 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0xfd 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x11e 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x11f 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x120 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x122 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x124 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x125 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x14a 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x14c 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x14d 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x150 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x151 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x17f 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x181 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x182 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x1ae 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x1af 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x1b3 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x1c9 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x23a 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x23b 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x23e 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x240 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+D:\CGHomework\Homework3\InputDetector.h(1,1): warning C4828: 文件包含在偏移 0x241 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  03 Rendering a Cube(2015 Win7).vcxproj -> D:\CGHomework\Homework3\03 Rendering a Cube(2015 Win7).exe
