@@ -92,4 +92,7 @@
       <Filter>着色器</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="HLSL\make_GS.hlsl" />
+  </ItemGroup>
 </Project>

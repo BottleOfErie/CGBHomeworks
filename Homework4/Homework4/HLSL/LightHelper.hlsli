@@ -72,7 +72,7 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
         //Blinn--Phong模型
         float3 h = normalize(lightVec + toEye);
         float3 halfdir = normalize(lightVec + normal);
-        float specFactor = pow(max(saturate(dot(halfdir, normal)), 0.0f), mat.Specular.w);
+        float specFactor = pow(max(saturate(dot(h, normal)), 0.0f), mat.Specular.w);
 
         diffuse = diffuseFactor * mat.Diffuse * L.LightIntensity;
         spec = specFactor * mat.Specular * L.LightIntensity;
@@ -114,7 +114,7 @@ void ComputePointLight(Material mat, PointLight L, float3 pos, float3 normal, fl
         //Blinn--Phong模型
         float3 h = normalize(lightVec + toEye);
         float3 halfdir = normalize(lightVec + normal);
-        float specFactor = pow(max(saturate(dot(halfdir, normal)), 0.0f), mat.Specular.w);
+        float specFactor = pow(max(saturate(dot(h, normal)), 0.0f), mat.Specular.w);
 
         diffuse = diffuseFactor * mat.Diffuse * L.LightIntensity;
         spec = specFactor * mat.Specular * L.LightIntensity;
@@ -163,7 +163,7 @@ void ComputeSpotLight(Material mat, SpotLight L, float3 pos, float3 normal, floa
         //Blinn--Phong模型
         float3 h = normalize(lightVec + toEye);
         float3 halfdir = normalize(lightVec + normal);
-        float specFactor = pow(max(saturate(dot(halfdir, normal)), 0.0f), mat.Specular.w);
+        float specFactor = pow(max(saturate(dot(h, normal)), 0.0f), mat.Specular.w);
 
         diffuse = diffuseFactor * mat.Diffuse * L.LightIntensity;
         spec = specFactor * mat.Specular * L.LightIntensity;

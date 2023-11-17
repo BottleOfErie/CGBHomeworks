@@ -183,7 +183,7 @@ void GameApp::DrawScene()
 
 	m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 5.0f);
+	m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 100.0f);
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
@@ -196,7 +196,7 @@ void GameApp::DrawScene()
 
 	m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.1f, 0.1f, 1.0f);
 	m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 0.2f, 0.1f, 1.0f);
-	m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 10.0f);
+	m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 100.0f);
 	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
 	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[1].Get(), 0);
@@ -249,7 +249,9 @@ bool GameApp::InitEffect()
 	// 创建并绑定顶点布局
 	HR(m_pd3dDevice->CreateInputLayout(VertexPosNormalColor::inputLayout, ARRAYSIZE(VertexPosNormalColor::inputLayout),
 		blob->GetBufferPointer(), blob->GetBufferSize(), m_pVertexLayout.GetAddressOf()));
-
+	//创建几何着色器
+	HR(CreateShaderFromFile(L"HLSL\\make_GS.cso", L"HLSL\\make_GS.hlsl", "GS", "gs_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(m_pd3dDevice->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pGeometryShader.GetAddressOf()));
 	// 创建像素着色器
 	HR(CreateShaderFromFile(L"HLSL\\Light_PS.cso", L"HLSL\\Light_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader.GetAddressOf()));
@@ -332,7 +334,7 @@ bool GameApp::InitResource()
 	m_SpotLight.position = XMFLOAT3(0.0f, 0.0f, -5.0f);
 	m_SpotLight.direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	m_SpotLight.lightIntensity = XMFLOAT4(0.4f, 0.4f, 0.8f, 1.0f);
-	m_SpotLight.att = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	m_SpotLight.att = XMFLOAT3(0.0f, 0.01f, 0.0f);
 	m_SpotLight.spot = 12.0f;
 	m_SpotLight.range = 10000.0f;
 	// 初始化用于VS的常量缓冲区的值
@@ -388,6 +390,8 @@ bool GameApp::InitResource()
 	m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
 	// VS常量缓冲区对应HLSL寄存于b0的常量缓冲区
 	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, m_pConstantBuffers[0].GetAddressOf());
+	m_pd3dImmediateContext->GSSetShader(m_pGeometryShader.Get(), nullptr, 0);
+	m_pd3dImmediateContext->GSSetConstantBuffers(0, 1, m_pConstantBuffers[0].GetAddressOf());
 	// PS常量缓冲区对应HLSL寄存于b1的常量缓冲区
 	m_pd3dImmediateContext->PSSetConstantBuffers(1, 1, m_pConstantBuffers[1].GetAddressOf());
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);

@@ -64,6 +64,7 @@ private:
 
 	ComPtr<ID3D11VertexShader> m_pVertexShader;	    // 顶点着色器
 	ComPtr<ID3D11PixelShader> m_pPixelShader;		// 像素着色器
+	ComPtr<ID3D11GeometryShader> m_pGeometryShader; // 几何着色器
 	VSConstantBuffer m_VSConstantBuffer;			// 用于修改用于VS的GPU常量缓冲区的变量
 	PSConstantBuffer m_PSConstantBuffer;			// 用于修改用于PS的GPU常量缓冲区的变量
 	

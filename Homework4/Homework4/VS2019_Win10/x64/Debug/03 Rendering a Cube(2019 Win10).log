@@ -1,0 +1,4 @@
+﻿D:\dx11xiaozu\CGBHomeworks\Homework4\Homework4\HLSL\make_GS.hlsl(25,12): warning X3078: 'i': loop control variable conflicts with a previous declaration in the outer scope; most recent declaration will be used
+  
+  compilation object save succeeded; see D:\dx11xiaozu\CGBHomeworks\Homework4\Homework4\make_GS.cso
+  03 Rendering a Cube(2019 Win10).vcxproj -> D:\dx11xiaozu\CGBHomeworks\Homework4\Homework4\03 Rendering a Cube(2019 Win10).exe
