@@ -2,12 +2,12 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\dx11xiaozu\CGBHomeworks\Homework4\Homework4\03 Rendering a Cube(2019 Win10).exe</FullPath>
+      <FullPath>D:\dx11xiaozu\CGBHomeworks\CGBHomeworks\Homework4\Homework4\03 Rendering a Cube(2019 Win10).exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>D:\dx11xiaozu\CGBHomeworks\Homework4\Homework4\make_GS.cso</FullPath>
+      <FullPath>D:\dx11xiaozu\CGBHomeworks\CGBHomeworks\Homework4\Homework4\make_GS.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />
