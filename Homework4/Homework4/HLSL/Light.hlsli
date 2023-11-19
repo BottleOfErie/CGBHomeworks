@@ -38,6 +38,7 @@ struct VertexOut
     float3 PosW : POSITION;     // 在世界中的位置
     float3 NormalW : NORMAL;    // 法向量在世界中的方向
 	float4 Color : COLOR;
+    
 };
 
 
