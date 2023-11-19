@@ -25,10 +25,11 @@ void GS(
 	for (uint i = 0; i < 3; i++)
 	{
 		VertexIn vIn = input[id[i]];
-		vIn.PosL.x = 50 - vIn.PosL.x;
 		float4 posW = mul(float4(vIn.PosL, 1.0f), g_World);
+		posW.x = 500 - posW.x;
 		element2.PosH = mul(posW, viewProj);
 		element2.PosW = posW.xyz;
+		vIn.NormalL.z = -vIn.NormalL.z;
 		element2.NormalW = mul(vIn.NormalL, (float3x3) g_WorldInvTranspose);
 		element2.Color = float4(0.5, 0.5, 0.5, 1.0);
 		output.Append(element2);
