@@ -15,7 +15,7 @@ class vertex:
          self.normal[i]=self.normal[i]/(self.norm_cnt+1)
       self.norm_cnt=self.norm_cnt+1
    def __str__(self):
-      return f'DirectX::XMFLOAT3({self.pos}),DirectX::XMFLOAT3({round(self.normal[1],6)},{round(self.normal[0],6)},{round(self.normal[2],6)}), DirectX::XMFLOAT4({random.randint(0,1)}, {random.randint(0,1)}, {random.randint(0,1)}, 1.0f),'
+      return f'DirectX::XMFLOAT3({self.pos}),DirectX::XMFLOAT3({round(self.normal[0],6)},{round(self.normal[1],6)},{round(self.normal[2],6)}), DirectX::XMFLOAT4({random.randint(0,1)}, {random.randint(0,1)}, {random.randint(0,1)}, 1.0f),'
 
 vertices=[]
 normals=[]
