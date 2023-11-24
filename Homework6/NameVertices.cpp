@@ -20,7 +20,16 @@ NameVertices::NameVertices(D3D11_PRIMITIVE_TOPOLOGY type)
 		nameVertices[i].pos.x *= 3.0f;
 		nameVertices[i].pos.y *= 3.0f;
 		nameVertices[i].pos.z *= 3.0f;
+
+		
 	}
+	for (UINT i = 0; i < 4; i++)
+	{
+		
+		nameTexVertices[i].pos.y *= 5.0f;
+		nameTexVertices[i].pos.z *= 5.0f;
+	}
+	
 }
 
 NameVertices::~NameVertices()
@@ -32,12 +41,18 @@ GameApp::VertexPosNormalColor* NameVertices::GetNameVertices()
 {
 	return nameVertices;
 }
-
+GameApp::VertexPosNormalTex* NameVertices::GetNameTexVertices()
+{
+	return nameTexVertices;
+}
 WORD* NameVertices::GetNameIndices()
 {
 	return nameIndices;
 }
-
+WORD* NameVertices::GetTexNameIndices()
+{
+	return TexNameIndices;
+}
 D3D11_PRIMITIVE_TOPOLOGY NameVertices::GetTopology()
 {
 	return topology;

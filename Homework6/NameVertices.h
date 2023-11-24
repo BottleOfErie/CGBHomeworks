@@ -9,8 +9,10 @@ public:
 
 	// 获取顶点
 	GameApp::VertexPosNormalColor* GetNameVertices();
+	GameApp::VertexPosNormalTex* GetNameTexVertices();
 	// 获取索引
 	WORD* GetNameIndices();
+	WORD* GetTexNameIndices();
 	// 获取绘制图元类型
 	D3D11_PRIMITIVE_TOPOLOGY GetTopology();
 	// 获取顶点个数 
@@ -5355,12 +5357,13 @@ DirectX::XMFLOAT3(2.005584f,-2.882884f,2.666059f),DirectX::XMFLOAT3(0.59964f,-0.
 DirectX::XMFLOAT3(1.955137f,-3.589577f,2.666059f),DirectX::XMFLOAT3(0.0821f,-0.59434f,-0.4f), DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f),
 DirectX::XMFLOAT3(2.022696f,-3.048377f,2.666059f),DirectX::XMFLOAT3(-0.125367f,-0.330767f,-0.5f), DirectX::XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f),
 //5334 points
-DirectX::XMFLOAT3(16.66f,10.0f,10.0f),DirectX::XMFLOAT3(1.0f,0.0f,0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-DirectX::XMFLOAT3(16.66f,-10.0f,10.0f),DirectX::XMFLOAT3(1.0f,0.0f,0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-DirectX::XMFLOAT3(16.66f,-10.0f,-10.0f),DirectX::XMFLOAT3(1.0f,0.0f,0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-DirectX::XMFLOAT3(16.66f,10.0f,-10.0f),DirectX::XMFLOAT3(1.0f,0.0f,0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-
-//4 points
+	}; // 顶点
+	
+	GameApp::VertexPosNormalTex* nameTexVertices = new GameApp::VertexPosNormalTex[1000]{
+DirectX::XMFLOAT3(49.98f,10.0f,10.0f),DirectX::XMFLOAT3(1.0f,0.0f,0.0f), DirectX::XMFLOAT2(0.0f, 0.0f),
+DirectX::XMFLOAT3(49.98f,-10.0f,10.0f),DirectX::XMFLOAT3(1.0f,0.0f,0.0f), DirectX::XMFLOAT2(0.0f, 1.0f),
+DirectX::XMFLOAT3(49.98f,-10.0f,-10.0f),DirectX::XMFLOAT3(1.0f,0.0f,0.0f), DirectX::XMFLOAT2(1.0f, 1.0f),
+DirectX::XMFLOAT3(49.98f,10.0f,-10.0f),DirectX::XMFLOAT3(1.0f,0.0f,0.0f), DirectX::XMFLOAT2(1.0f, 0.0f),
 	}; // 顶点
 	WORD* nameIndices=new WORD[100000]{
 1,2,3,
@@ -13416,11 +13419,18 @@ DirectX::XMFLOAT3(16.66f,10.0f,-10.0f),DirectX::XMFLOAT3(1.0f,0.0f,0.0f), Direct
 4789,5188,4800,
 5177,5188,4789,
 //8052 * 3 index
-5334,5336,5335,
-5334,5337,5336
+0,2,1,
+0,3,2
 //2 * 3 index
 
 }; // 索引
+	WORD* TexNameIndices = new WORD[100000]{
+		0,2,1,
+		0,3,2
+		//2 * 3 index
+	};
+
+
 	D3D11_PRIMITIVE_TOPOLOGY topology;// 图元类型 
 	UINT verticesCount; // 顶点个数
 	UINT indexCount; // 索引个数

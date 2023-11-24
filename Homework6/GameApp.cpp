@@ -9,6 +9,11 @@ const D3D11_INPUT_ELEMENT_DESC GameApp::VertexPosNormalColor::inputLayout[3] = {
 	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
+const D3D11_INPUT_ELEMENT_DESC GameApp::VertexPosNormalTex::inputLayout[3] = {
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+};
 
 GameApp::GameApp(HINSTANCE hInstance)
 	: D3DApp(hInstance), 
@@ -74,7 +79,7 @@ void GameApp::UpdateScene(float dt)
 	m_KeyboardTracker.Update(keyState);
 
 	XMFLOAT3 pos = { 0, 0, 0 };
-	float moveSpeed = 40.0f;
+	float moveSpeed = 100.0f;
 	if (keyState.IsKeyDown(Keyboard::LeftShift)) moveSpeed *= 2.0f;
 	if (keyState.IsKeyDown(Keyboard::W)) pos.z += moveSpeed * dt;
 	if (keyState.IsKeyDown(Keyboard::S)) pos.z -= moveSpeed * dt;
@@ -100,6 +105,24 @@ void GameApp::UpdateScene(float dt)
 	viewPos.z += pos.z;
 	m_VSConstantBuffer.view = XMMatrixTranspose(XMMatrixTranslation(-viewPos.x, -viewPos.y, -viewPos.z) * XMMatrixRotationY(-viewRot.y) * XMMatrixRotationZ(-viewRot.z) * XMMatrixRotationX(-viewRot.x));
 	m_PSConstantBuffer.eyePos = { viewPos.x, viewPos.y, viewPos.z, 0.0f };
+
+
+
+	m_pd3dImmediateContext->PSSetShaderResources(0, 1, m_pFace.GetAddressOf());// 设置纹理资源 
+
+	// 初始化采样器状态
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	HR(m_pd3dDevice->CreateSamplerState(&sampDesc, m_pSamplerState.GetAddressOf()));
+
+
 
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::D3))
 	{
@@ -235,19 +258,45 @@ void GameApp::DrawScene()
 
 void GameApp::DrawName()
 {
+	//设置顶点缓冲区
+	UINT stride = sizeof(VertexPosNormalColor);	// 跨越字节数
+	UINT offset = 0;						// 起始偏移量
+	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer[0].GetAddressOf(), &stride, &offset);
+	
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[0].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(VSConstantBuffer), &m_VSConstantBuffer, sizeof(VSConstantBuffer));
 	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[0].Get(), 0);
+	m_pd3dImmediateContext->IASetIndexBuffer(m_pIndexBuffer[0].Get(), DXGI_FORMAT_R16_UINT, 0);
+
+	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
+    m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
+    m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
+
 	m_pd3dImmediateContext->DrawIndexed(name->GetIndexCount()-6, 0, 0);// 通过对象获取索引个数、、、、、、、、、、、、、、、、、
 }
 void GameApp::DrawMirror()
-{
+{	
+	//设置顶点缓冲区
+	UINT stride = sizeof(VertexPosNormalTex);	// 跨越字节数
+	UINT offset = 0;						// 起始偏移量
+	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer[1].GetAddressOf(), &stride, &offset);
+	
+
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[0].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(VSConstantBuffer), &m_VSConstantBuffer, sizeof(VSConstantBuffer));
 	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[0].Get(), 0);
-	m_pd3dImmediateContext->DrawIndexed(6, 24156, 0);// 通过对象获取索引个数、、、、、、、、、、、、、、、、、
+
+	m_pd3dImmediateContext->IASetIndexBuffer(m_pIndexBuffer[1].Get(), DXGI_FORMAT_R16_UINT, 0);
+	
+	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout_Tex.Get());
+    m_pd3dImmediateContext->VSSetShader(m_pVertexShader_Tex.Get(), nullptr, 0);
+    m_pd3dImmediateContext->PSSetShader(m_pPixelShader_Tex.Get(), nullptr, 0);
+    m_pd3dImmediateContext->PSSetShaderResources(0, 1, m_pFace.GetAddressOf());
+
+	m_pd3dImmediateContext->DrawIndexed(6, 0, 0);// 通过对象获取索引个数、、、、、、、、、、、、、、、、、
+
 }
 
 bool GameApp::InitEffect()
@@ -267,6 +316,21 @@ bool GameApp::InitEffect()
 	HR(CreateShaderFromFile(L"HLSL\\Light_PS.cso", L"HLSL\\Light_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader.GetAddressOf()));
 
+	
+
+	//tex
+	// 创建顶点着色器
+	HR(CreateShaderFromFile(L"HLSL\\Tex_VS.cso", L"HLSL\\Tex_VS.hlsl", "VS", "vs_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(m_pd3dDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pVertexShader_Tex.GetAddressOf()));
+	// 创建并绑定顶点布局
+	HR(m_pd3dDevice->CreateInputLayout(VertexPosNormalTex::inputLayout, ARRAYSIZE(VertexPosNormalTex::inputLayout), blob->GetBufferPointer(), blob->GetBufferSize(), m_pVertexLayout_Tex.GetAddressOf()));
+	//创建几何着色器
+	HR(CreateShaderFromFile(L"HLSL\\Tex_GS.cso", L"HLSL\\Tex_GS.hlsl", "GS", "gs_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(m_pd3dDevice->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pGeometryShader_Tex.GetAddressOf()));
+	// 创建像素着色器
+	HR(CreateShaderFromFile(L"HLSL\\Tex_PS.cso", L"HLSL\\Tex_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader_Tex.GetAddressOf()));
+
 	return true;
 }
 
@@ -275,37 +339,71 @@ bool GameApp::InitResource()
 	// 创建对象，绘制类型为0、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、
 	name = new NameVertices(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	// 设置三角形顶点
-	VertexPosNormalColor* vertices = name->GetNameVertices(); // 通过对象获取顶点、、、、、、、、、、、、、、、、、、、、、
+	VertexPosNormalColor* vertices1 = name->GetNameVertices(); // 通过对象获取顶点、、、、、、、、、、、、、、、、、、、、、
 	// 设置顶点缓冲区描述
-	D3D11_BUFFER_DESC vbd;
-	ZeroMemory(&vbd, sizeof(vbd));
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = (sizeof * vertices) * name->GetVerticesCount(); // 计算位宽、、、、、、、、、、、、、、、、、、、、、、、、、
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0;
+	D3D11_BUFFER_DESC vbd1;
+	ZeroMemory(&vbd1, sizeof(vbd1));
+	vbd1.Usage = D3D11_USAGE_IMMUTABLE;
+	vbd1.ByteWidth = (sizeof * vertices1) * name->GetVerticesCount(); // 计算位宽、、、、、、、、、、、、、、、、、、、、、、、、、
+	vbd1.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd1.CPUAccessFlags = 0;
 	// 新建顶点缓冲区
-	D3D11_SUBRESOURCE_DATA InitData;
-	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = vertices;
-	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
+	D3D11_SUBRESOURCE_DATA InitData1;
+	ZeroMemory(&InitData1, sizeof(InitData1));
+	InitData1.pSysMem = vertices1;
+	HR(m_pd3dDevice->CreateBuffer(&vbd1, &InitData1, m_pVertexBuffer[0].GetAddressOf()));
+
+	// 为第二种顶点类型创建顶点缓冲区
+	VertexPosNormalTex* vertices2 = name->GetNameTexVertices(); 
+	D3D11_BUFFER_DESC vbd2;
+	ZeroMemory(&vbd2, sizeof(vbd2));
+	vbd2.Usage = D3D11_USAGE_IMMUTABLE;
+	vbd2.ByteWidth = sizeof(VertexPosNormalTex) * 4; 
+	vbd2.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd2.CPUAccessFlags = 0;
+	D3D11_SUBRESOURCE_DATA InitData2;
+	ZeroMemory(&InitData2, sizeof(InitData2));
+	InitData2.pSysMem = vertices2;
+	HR(m_pd3dDevice->CreateBuffer(&vbd2, &InitData2, m_pVertexBuffer[1].GetAddressOf())); // m_pVertexBuffer2是一个ID3D11Buffer指针
+
+
+
+
+
+	// ******************
+	// 初始化贴图
+	//
+	HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"assests\\face.dds", nullptr, m_pFace.GetAddressOf()));
 
 	// ******************
 	// 索引数组
 	//
 	WORD* indices = name->GetNameIndices(); // 通过对象获取索引、、、、、、、、、、、、、、、、、、、、、
-	
+	WORD* indicesTex = name->GetTexNameIndices();
 	// 设置索引缓冲区描述
-	D3D11_BUFFER_DESC ibd;
-	ZeroMemory(&ibd, sizeof(ibd));
-	ibd.Usage = D3D11_USAGE_IMMUTABLE;
-	ibd.ByteWidth = (sizeof * indices) * name->GetIndexCount(); // 计算位宽、、、、、、、、、、、、、、、、、、、、、、、、、
-	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	ibd.CPUAccessFlags = 0;
+	D3D11_BUFFER_DESC ibd1;
+	ZeroMemory(&ibd1, sizeof(ibd1));
+	ibd1.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd1.ByteWidth = (sizeof * indices) * name->GetIndexCount(); // 计算位宽、、、、、、、、、、、、、、、、、、、、、、、、、
+	ibd1.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd1.CPUAccessFlags = 0;
 	// 新建索引缓冲区
-	InitData.pSysMem = indices;
-	HR(m_pd3dDevice->CreateBuffer(&ibd, &InitData, m_pIndexBuffer.GetAddressOf()));
+	InitData1.pSysMem = indices;
+	HR(m_pd3dDevice->CreateBuffer(&ibd1, &InitData1, m_pIndexBuffer[0].GetAddressOf()));
+
+	// 设置索引缓冲区描述
+	D3D11_BUFFER_DESC ibd2;
+	ZeroMemory(&ibd2, sizeof(ibd2));
+	ibd2.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd2.ByteWidth = (sizeof * indicesTex) * 6; // 计算位宽、、、、、、、、、、、、、、、、、、、、、、、、、
+	ibd2.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd2.CPUAccessFlags = 0;
+	// 新建索引缓冲区
+	InitData2.pSysMem = indicesTex;
+	HR(m_pd3dDevice->CreateBuffer(&ibd2, &InitData2, m_pIndexBuffer[1].GetAddressOf()));
+
 	// 输入装配阶段的索引缓冲区设置
-	m_pd3dImmediateContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	m_pd3dImmediateContext->IASetIndexBuffer(m_pIndexBuffer[0].Get(), DXGI_FORMAT_R16_UINT, 0);
 
 	// ******************
 	// 设置常量缓冲区描述
@@ -393,8 +491,8 @@ bool GameApp::InitResource()
 	// 输入装配阶段的顶点缓冲区设置
 	UINT stride = sizeof(VertexPosNormalColor);	// 跨越字节数
 	UINT offset = 0;						// 起始偏移量
-
-	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
+	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer[0].GetAddressOf(), &stride, &offset);
+	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer[1].GetAddressOf(), &stride, &offset);
 	// 设置图元类型，设定输入布局
 	m_pd3dImmediateContext->IASetPrimitiveTopology(name->GetTopology());// 通过对象设置图元类型、、、、、、、、、、、、、、、、、、、、、
 	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
@@ -407,13 +505,20 @@ bool GameApp::InitResource()
 	m_pd3dImmediateContext->GSSetConstantBuffers(0, 1, m_pConstantBuffers[0].GetAddressOf());
 	// PS常量缓冲区对应HLSL寄存于b1的常量缓冲区
 	m_pd3dImmediateContext->PSSetConstantBuffers(1, 1, m_pConstantBuffers[1].GetAddressOf());
+	// PS采样器对应位图资源寄存于s0的采样器
+	m_pd3dImmediateContext->PSSetSamplers(0, 1, m_pSamplerState.GetAddressOf());
+	m_pd3dImmediateContext->PSSetShaderResources(0, 1, m_pFace.GetAddressOf());
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
+	
+
 
 	// ******************
 	// 设置调试对象名
 	//
-	D3D11SetDebugObjectName(m_pVertexBuffer.Get(), "VertexBuffer");
-	D3D11SetDebugObjectName(m_pIndexBuffer.Get(), "IndexBuffer");
+	D3D11SetDebugObjectName(m_pVertexBuffer[0].Get(), "VertexBuffer");
+	D3D11SetDebugObjectName(m_pVertexBuffer[1].Get(), "VertexBuffer");
+	D3D11SetDebugObjectName(m_pIndexBuffer[0].Get(), "IndexBuffer");
+	D3D11SetDebugObjectName(m_pIndexBuffer[1].Get(), "IndexBuffer");
 	D3D11SetDebugObjectName(m_pVertexLayout.Get(), "VertexPosNormalTexLayout");
 	D3D11SetDebugObjectName(m_pConstantBuffers[0].Get(), "VSConstantBuffer");
 	D3D11SetDebugObjectName(m_pConstantBuffers[1].Get(), "PSConstantBuffer");

@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "任务-03 Rendering a Cube(2019 Win10)",
+      "appliesTo": "03 Rendering a Cube(2019 Win10).sln",
+      "type": "launch"
+    }
+  ]
+}
