@@ -271,6 +271,7 @@ void GameApp::DrawName()
 
 	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
     m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
+	m_pd3dImmediateContext->GSSetShader(m_pGeometryShader.Get(), nullptr, 0);
     m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
 
 	m_pd3dImmediateContext->DrawIndexed(name->GetIndexCount()-6, 0, 0);// 通过对象获取索引个数、、、、、、、、、、、、、、、、、
@@ -292,6 +293,7 @@ void GameApp::DrawMirror()
 	
 	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout_Tex.Get());
     m_pd3dImmediateContext->VSSetShader(m_pVertexShader_Tex.Get(), nullptr, 0);
+	m_pd3dImmediateContext->GSSetShader(m_pGeometryShader_Tex.Get(), nullptr, 0);
     m_pd3dImmediateContext->PSSetShader(m_pPixelShader_Tex.Get(), nullptr, 0);
     m_pd3dImmediateContext->PSSetShaderResources(0, 1, m_pFace.GetAddressOf());
 
