@@ -48,6 +48,12 @@
     <ClCompile Include="Keyboard.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="WICTextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dApp.h">
@@ -77,6 +83,12 @@
     <ClInclude Include="LightHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="WICTextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\LightHelper.hlsli">
@@ -91,8 +103,18 @@
     <None Include="HLSL\Light_VS.hlsl">
       <Filter>着色器</Filter>
     </None>
+    <None Include="03 Rendering a Cube(2019 Win10).pdb" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\make_GS.hlsl" />
+    <FxCompile Include="HLSL\Tex_VS.hlsl" />
+    <FxCompile Include="HLSL\Tex_PS.hlsl" />
+    <FxCompile Include="HLSL\Tex_GS.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assests\face.dds" />
+    <Image Include="assests\face.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

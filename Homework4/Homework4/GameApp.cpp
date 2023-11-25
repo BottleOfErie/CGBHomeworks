@@ -183,7 +183,7 @@ void GameApp::DrawScene()
 
 	m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 100.0f);
+	m_PSConstantBuffer.material.specular = XMFLOAT4(0.1f, 0.01f, 0.0f, 100.0f);
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
@@ -194,12 +194,12 @@ void GameApp::DrawScene()
 	DrawName();
 
 
-	m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.1f, 0.1f, 1.0f);
-	m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 0.2f, 0.1f, 1.0f);
-	m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 100.0f);
-	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
-	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[1].Get(), 0);
+	//m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.1f, 0.1f, 1.0f);
+	//m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 0.2f, 0.1f, 1.0f);
+	//m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 100.0f);
+	//HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	//memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
+	//m_pd3dImmediateContext->Unmap(m_pConstantBuffers[1].Get(), 0);
 	for (int i = 1; i <= nameN; i++)
 	{
 		for (int j = 1; j <= nameN; j++)

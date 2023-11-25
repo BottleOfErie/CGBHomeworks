@@ -53,7 +53,7 @@ bool GameApp::Init()
 
 	// 初始化鼠标，键盘不需要
 	m_pMouse->SetWindow(m_hMainWnd);
-	m_pMouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+	m_pMouse->SetMode(DirectX::Mouse::MODE_RELATIVE);
 
 	return true;
 }
@@ -79,7 +79,7 @@ void GameApp::UpdateScene(float dt)
 	m_KeyboardTracker.Update(keyState);
 
 	XMFLOAT3 pos = { 0, 0, 0 };
-	float moveSpeed = 100.0f;
+	float moveSpeed = 150.0f;
 	if (keyState.IsKeyDown(Keyboard::LeftShift)) moveSpeed *= 2.0f;
 	if (keyState.IsKeyDown(Keyboard::W)) pos.z += moveSpeed * dt;
 	if (keyState.IsKeyDown(Keyboard::S)) pos.z -= moveSpeed * dt;
@@ -88,11 +88,9 @@ void GameApp::UpdateScene(float dt)
 	if (keyState.IsKeyDown(Keyboard::Q)) viewRot.z += 0.5f * dt;
 	if (keyState.IsKeyDown(Keyboard::E)) viewRot.z -= 0.5f * dt;
 
-	if (mouseState.leftButton == true && m_MouseTracker.leftButton == m_MouseTracker.HELD) // 这两者似乎只有在鼠标按下的那一帧存在区别(此时左为true，右为false)?
-	{
-		viewRot.y += (mouseState.x - lastMouseState.x) * 0.5f * dt;
-		viewRot.x += (mouseState.y - lastMouseState.y) * 0.5f * dt;
-	}
+
+	viewRot.y += mouseState.x * 0.005f;
+	viewRot.x += mouseState.y * 0.005f;
 
 	if (viewRot.x > 1.5f) viewRot.x = 1.5f;
 	else if (viewRot.x < -1.5f) viewRot.x = -1.5f;

@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClCompile Include="d3dApp.cpp" />
     <ClCompile Include="d3dUtil.cpp" />
+    <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DXTrace.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="GameTimer.cpp" />
@@ -143,10 +144,12 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="NameVertices.cpp" />
+    <ClCompile Include="WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dApp.h" />
     <ClInclude Include="d3dUtil.h" />
+    <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="DXTrace.h" />
     <ClInclude Include="GameApp.h" />
     <ClInclude Include="GameTimer.h" />
@@ -154,8 +157,10 @@
     <ClInclude Include="LightHelper.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="NameVertices.h" />
+    <ClInclude Include="WICTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="03 Rendering a Cube(2019 Win10).pdb" />
     <None Include="HLSL\Light.hlsli" />
     <None Include="HLSL\LightHelper.hlsli" />
   </ItemGroup>
@@ -187,6 +192,25 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GS</EntryPointName>
     </FxCompile>
+    <FxCompile Include="HLSL\Tex_GS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GS</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\Tex_PS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PS</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\Tex_VS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assests\face.dds" />
+    <Image Include="assests\face.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
