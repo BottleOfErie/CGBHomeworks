@@ -31,7 +31,7 @@ void GS(
 		posW.x = 500 - posW.x;
 		element2.PosH = mul(posW, viewProj);
 		element2.PosW = posW.xyz;
-		vIn.NormalL.x = -vIn.NormalL.x;
+		vIn.NormalL.x = vIn.NormalL.x;
 		element2.NormalW = mul(vIn.NormalL, (float3x3) g_WorldInvTranspose);
 		//element2.Color = float4(0.5, 0.5, 0.5, 1.0);
 		//贴图

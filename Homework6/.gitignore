@@ -1,0 +1,30 @@
+# CMake build files
+CMakeFiles/
+CMakeCache.txt
+CMakeScripts/
+cmake_install.cmake
+Makefile
+
+# Visual Studio files
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# Compiled object files
+*.obj
+*.o
+
+# Compiled dynamic libraries
+*.dll
+*.so
+*.dylib
+
+# Compiled executables
+*.exe
+
+# Generated files
+bin/
+build/
+
+*.cso

@@ -373,7 +373,7 @@ bool GameApp::InitResource()
 	// ******************
 	// 初始化贴图
 	//
-	HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"assests\\face.dds", nullptr, m_pFace.GetAddressOf()));
+	HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"assests\\4face.dds", nullptr, m_pFace.GetAddressOf()));
 
 	// ******************
 	// 索引数组
