@@ -10,6 +10,7 @@ cbuffer VSConstantBuffer : register(b0)
     matrix g_Proj;  
     matrix g_WorldInvTranspose;
     int g_IsReflection;
+    float3 g_Pad3;
 }
 
 cbuffer PSConstantBuffer : register(b1)
@@ -19,11 +20,13 @@ cbuffer PSConstantBuffer : register(b1)
     SpotLight g_SpotLight;
     Material g_Material;
     float3 g_EyePosW;
+    
     DirectionalLight g_DirLight1;
     DirectionalLight g_DirLight2;
     DirectionalLight g_DirLight3;
     DirectionalLight g_DirLight4;
     DirectionalLight g_DirLight5;
+    matrix g_Reflection;
     float g_Pad;
 }
 

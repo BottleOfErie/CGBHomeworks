@@ -45,6 +45,14 @@ GameApp::VertexPosNormalTex* NameVertices::GetNameTexVertices()
 {
 	return nameTexVertices;
 }
+GameApp::VertexPosNormalTex* NameVertices::GetMirrorVertices()
+{
+	return mirrorVertices;
+}
+GameApp::VertexPosNormalTex* NameVertices::GetWallVertices()
+{
+	return wallVertices;
+}
 WORD* NameVertices::GetNameIndices()
 {
 	return nameIndices;
@@ -52,6 +60,14 @@ WORD* NameVertices::GetNameIndices()
 WORD* NameVertices::GetTexNameIndices()
 {
 	return TexNameIndices;
+}
+WORD* NameVertices::GetWallIndices()
+{
+	return wallIndices;
+}
+WORD* NameVertices::GetMirrorIndices()
+{
+	return mirrorIndices;
 }
 D3D11_PRIMITIVE_TOPOLOGY NameVertices::GetTopology()
 {

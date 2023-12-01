@@ -10,9 +10,13 @@ public:
 	// 获取顶点
 	GameApp::VertexPosNormalColor* GetNameVertices();
 	GameApp::VertexPosNormalTex* GetNameTexVertices();
+	GameApp::VertexPosNormalTex* GetMirrorVertices();
+	GameApp::VertexPosNormalTex* GetWallVertices();
 	// 获取索引
 	WORD* GetNameIndices();
 	WORD* GetTexNameIndices();
+	WORD* GetMirrorIndices();
+	WORD* GetWallIndices();
 	// 获取绘制图元类型
 	D3D11_PRIMITIVE_TOPOLOGY GetTopology();
 	// 获取顶点个数 
@@ -5365,7 +5369,21 @@ DirectX::XMFLOAT3(49.98f,-10.0f,10.0f),DirectX::XMFLOAT3(-1.0f,0.0f,0.0f), Direc
 DirectX::XMFLOAT3(49.98f,-10.0f,-10.0f),DirectX::XMFLOAT3(-1.0f,0.0f,0.0f), DirectX::XMFLOAT2(1.0f, 1.0f),
 DirectX::XMFLOAT3(49.98f,10.0f,-10.0f),DirectX::XMFLOAT3(-1.0f,0.0f,0.0f), DirectX::XMFLOAT2(1.0f, 0.0f),
 	}; // 顶点
-	WORD* nameIndices=new WORD[100000]{
+	
+	GameApp::VertexPosNormalTex* mirrorVertices = new GameApp::VertexPosNormalTex[1000]{
+		DirectX::XMFLOAT3(-50.0f,100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(0.0f, 0.0f),
+		DirectX::XMFLOAT3(-50.0f,-100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(0.0f, 1.0f),
+		DirectX::XMFLOAT3(150.0f,-100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(1.0f, 1.0f),
+		DirectX::XMFLOAT3(150.0f,100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(1.0f,0.0f),
+	}; // 顶点
+	GameApp::VertexPosNormalTex* wallVertices = new GameApp::VertexPosNormalTex[1000]{
+		DirectX::XMFLOAT3(-100.0f,150.0f,102.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(0.0f, 0.0f),
+		DirectX::XMFLOAT3(-100.0f,-150.0f,102.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(0.0f, 1.0f),
+		DirectX::XMFLOAT3(200.0f,-150.0f,102.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(1.0f, 1.0f),
+		DirectX::XMFLOAT3(200.0f,150.0f,102.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(1.0f,0.0f),
+	}; // 顶点
+
+	WORD* nameIndices = new WORD[100000]{
 1,2,3,
 0,1,3,
 5,1,0,
@@ -13424,13 +13442,21 @@ DirectX::XMFLOAT3(49.98f,10.0f,-10.0f),DirectX::XMFLOAT3(-1.0f,0.0f,0.0f), Direc
 //2 * 3 index
 
 }; // 索引
-	WORD* TexNameIndices = new WORD[100000]{
+	WORD* TexNameIndices = new WORD[100]{
 		0,2,1,
 		0,3,2
 		//2 * 3 index
 	};
-
-
+	WORD* mirrorIndices = new WORD[100]{
+		0,2,1,
+		0,3,2
+		//2 * 3 index
+	};
+	WORD* wallIndices = new WORD[100]{
+		0,2,1,
+		0,3,2
+		//2 * 3 index
+	};
 	D3D11_PRIMITIVE_TOPOLOGY topology;// 图元类型 
 	UINT verticesCount; // 顶点个数
 	UINT indexCount; // 索引个数

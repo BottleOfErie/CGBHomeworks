@@ -188,40 +188,45 @@ void GameApp::DrawScene() {
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), reinterpret_cast<const float*>(&Colors::Black));
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 100.0f);
+	// m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	// m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	// m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 100.0f);
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
 	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[1].Get(), 0);
 
-	m_VSConstantBuffer.world = XMMatrixTranspose(XMMatrixScaling(5.0f, 5.0f, 5.0f) * XMMatrixTranslation(0, 0.0f, 0.0f));
+	m_VSConstantBuffer.world = XMMatrixTranspose(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixTranslation(0, 0.0f, 0.0f));
 	m_VSConstantBuffer.worldInvTranspose = XMMatrixInverse(nullptr, XMMatrixTranspose(m_VSConstantBuffer.world));
 
-	// DrawName();
-
-	// m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.1f, 0.1f, 1.0f);
-	// m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 0.2f, 0.1f, 1.0f);
-	// m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 100.0f);
-	// HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	// memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
-	// m_pd3dImmediateContext->Unmap(m_pConstantBuffers[1].Get(), 0);
-	m_pd3dImmediateContext->RSSetState(RenderStates::RSNoCull.Get());
-    m_pd3dImmediateContext->OMSetBlendState(RenderStates::BSTransparent.Get(), nullptr, 0xFFFFFFFF);
-	DrawName();
 	
+	
+	DrawMirror();
+
+	DrawForest(true);
+	DrawPic(true);
+
+	DrawWall();
+
+	DrawForest(false);	
+	DrawPic(false);
+
+	HR(m_pSwapChain->Present(0, 0));
+}
+void GameApp::DrawForest(bool isReflection)
+{	
+	m_VSConstantBuffer.world = XMMatrixTranspose(XMMatrixScaling(3.0f, 3.0f, 3.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+	DrawName(isReflection);
+	m_VSConstantBuffer.world = XMMatrixTranspose(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
 	for (int i = 1; i <= nameN; i++) {
 		for (int j = 1; j <= nameN; j++) {
-			float scale = (sinf(angle * 3.0f + i * j * 0.2f) + 1.3f) * 0.35f;
+			float scale = (sinf(angle * 3.0f + i * j * 0.2f) + 1.3f) * 0.15f;
 			DirectX::XMMATRIX mScale = XMMatrixScaling(scale, scale, scale);
 			DirectX::XMMATRIX mRotate = XMMatrixRotationX(angle) * XMMatrixRotationY(angle);
-			DirectX::XMMATRIX mTranslate = XMMatrixTranslation((i - (nameN + 1) / 2.0f) * 4.5f * 4, 0, (j - (nameN + 1) / 2.0f) * 4.5f * 4);
+			DirectX::XMMATRIX mTranslate = XMMatrixTranslation((i - (nameN + 1) / 2.0f) * 4.5f * 4 * 0.5, 0, (j - (nameN + 1) / 2.0f) * 4.5f * 4 * 0.5);
 			m_VSConstantBuffer.world = XMMatrixTranspose(mScale * mRotate * mTranslate); // mul(vec, mat) 中为行向量，矩阵右乘，顺序SRT, 参考https://www.cnblogs.com/X-Jun/p/9808727.html#_lab2_1_1
 			m_VSConstantBuffer.worldInvTranspose = XMMatrixInverse(nullptr, XMMatrixTranspose(m_VSConstantBuffer.world));
-
-			DrawName();
-
+			DrawName(isReflection);
 			srand(i * j + 1);
 			DirectX::XMMATRIX mScaleChild = XMMatrixScaling(0.3f, 0.3f, 0.3f);
 			DirectX::XMMATRIX mTranslateChild = XMMatrixTranslation(2.5f, 0, 0);
@@ -229,66 +234,84 @@ void GameApp::DrawScene() {
 				DirectX::XMMATRIX mRotateChild = XMMatrixRotationX(rand() + angle) * XMMatrixRotationY(rand() + angle) * XMMatrixRotationY(rand() + angle);
 				m_VSConstantBuffer.world = XMMatrixTranspose(mScaleChild * mTranslateChild * mScale * mRotateChild * mTranslate);
 				m_VSConstantBuffer.worldInvTranspose = XMMatrixInverse(nullptr, XMMatrixTranspose(m_VSConstantBuffer.world));
-
-				DrawName();
+				DrawName(isReflection);
 			}
 		}
 	}
-	m_VSConstantBuffer.world = XMMatrixTranspose(XMMatrixScaling(5.0f, 5.0f, 5.0f) * XMMatrixTranslation(0, 0.0f, 0.0f));
+	m_VSConstantBuffer.world = XMMatrixTranspose(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixTranslation(0, 0.0f, 0.0f));
 	m_VSConstantBuffer.worldInvTranspose = XMMatrixInverse(nullptr, XMMatrixTranspose(m_VSConstantBuffer.world));
-	DrawPic();
-	HR(m_pSwapChain->Present(0, 0));
 }
-
-void GameApp::DrawName() {
-	// //设置顶点缓冲区
-	// UINT stride = sizeof(VertexPosNormalColor);	// 跨越字节数
-	// UINT offset = 0;						// 起始偏移量
-	// m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer[0].GetAddressOf(), &stride, &offset);
-
-	// D3D11_MAPPED_SUBRESOURCE mappedData;
-	// HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[0].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	// memcpy_s(mappedData.pData, sizeof(VSConstantBuffer), &m_VSConstantBuffer, sizeof(VSConstantBuffer));
-	// m_pd3dImmediateContext->Unmap(m_pConstantBuffers[0].Get(), 0);
-	// m_pd3dImmediateContext->IASetIndexBuffer(m_pIndexBuffer[0].Get(), DXGI_FORMAT_R16_UINT, 0);
-
-	// m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
-	// m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
-	// m_pd3dImmediateContext->GSSetShader(m_pGeometryShader.Get(), nullptr, 0);
-	// m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
-
-	// m_pd3dImmediateContext->DrawIndexed(name->GetIndexCount(), 0, 0);// 通过对象获取索引个数、、、、、、、、、、、、、、、、、
+void GameApp::DrawName(bool isReflection) 
+{	
+	if(isReflection){
+		// 开启反射绘制
+		m_VSConstantBuffer.isReflection = true;
+		// 绘制不透明物体，需要顺时针裁剪
+		// 仅对模板值为1的镜面区域绘制
+		m_pd3dImmediateContext->RSSetState(RenderStates::RSCullClockWise.Get());
+		m_pd3dImmediateContext->OMSetDepthStencilState(RenderStates::DSSDrawWithStencil.Get(), 1);
+		m_pd3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+	}
+	else{
+		//不透明绘制
+		m_VSConstantBuffer.isReflection = false;
+		m_pd3dImmediateContext->RSSetState(nullptr);
+		m_pd3dImmediateContext->OMSetDepthStencilState(nullptr, 0);
+		m_pd3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+	}
+	
 
 	m_pName.SetWorldMatrix(m_VSConstantBuffer.world);
-	m_pName.Draw(m_pd3dImmediateContext, m_VSConstantBuffer);
-
-
+	m_pName.Draw(m_pd3dImmediateContext, m_VSConstantBuffer,m_PSConstantBuffer);
 }
 
-void GameApp::DrawPic() {
-	// //设置顶点缓冲区
-	// UINT stride = sizeof(VertexPosNormalTex);	// 跨越字节数
-	// UINT offset = 0;						// 起始偏移量
-	// m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer[1].GetAddressOf(), &stride, &offset);
+void GameApp::DrawPic(bool isReflection) 
+{
+	if(isReflection)
+	{
+		m_VSConstantBuffer.isReflection = true;
+		m_pd3dImmediateContext->RSSetState(RenderStates::RSNoCull.Get());
+		m_pd3dImmediateContext->OMSetDepthStencilState(RenderStates::DSSDrawWithStencil.Get(), 1);
+		m_pd3dImmediateContext->OMSetBlendState(RenderStates::BSTransparent.Get(), nullptr, 0xFFFFFFFF);
 
+		m_pMirror.SetWorldMatrix(m_VSConstantBuffer.world);
+		m_pMirror.Draw(m_pd3dImmediateContext, m_VSConstantBuffer,m_PSConstantBuffer);
+		
+	}
+	else{
+		m_VSConstantBuffer.isReflection = false;
+		m_pd3dImmediateContext->RSSetState(RenderStates::RSNoCull.Get());
+		m_pd3dImmediateContext->OMSetDepthStencilState(nullptr, 0);
+		m_pd3dImmediateContext->OMSetBlendState(RenderStates::BSTransparent.Get(), nullptr, 0xFFFFFFFF);
+	}
+	
 
-	// D3D11_MAPPED_SUBRESOURCE mappedData;
-	// HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[0].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	// memcpy_s(mappedData.pData, sizeof(VSConstantBuffer), &m_VSConstantBuffer, sizeof(VSConstantBuffer));
-	// m_pd3dImmediateContext->Unmap(m_pConstantBuffers[0].Get(), 0);
-
-	// m_pd3dImmediateContext->IASetIndexBuffer(m_pIndexBuffer[1].Get(), DXGI_FORMAT_R16_UINT, 0);
-
-	// m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout_Tex.Get());
-	// m_pd3dImmediateContext->VSSetShader(m_pVertexShader_Tex.Get(), nullptr, 0);
-	// m_pd3dImmediateContext->GSSetShader(m_pGeometryShader_Tex.Get(), nullptr, 0);
-	// m_pd3dImmediateContext->PSSetShader(m_pPixelShader_Tex.Get(), nullptr, 0);
-
-	// m_pd3dImmediateContext->DrawIndexed(6, 0, 0);// 通过对象获取索引个数、、、、、、、、、、、、、、、、、
 	m_pFace.SetWorldMatrix(m_VSConstantBuffer.world);
-	m_pFace.Draw(m_pd3dImmediateContext,m_VSConstantBuffer);
-
+	m_pFace.Draw(m_pd3dImmediateContext,m_VSConstantBuffer,m_PSConstantBuffer);
 }
+void GameApp::DrawMirror() 
+{
+	// 裁剪掉背面三角形
+	// 标记镜面区域的模板值为1
+	// 不写入像素颜色
+	m_pd3dImmediateContext->RSSetState(nullptr);
+	m_pd3dImmediateContext->OMSetDepthStencilState(RenderStates::DSSWriteStencil.Get(), 1);
+	m_pd3dImmediateContext->OMSetBlendState(RenderStates::BSNoColorWrite.Get(), nullptr, 0xFFFFFFFF);
+
+	m_pMirror.SetWorldMatrix(m_VSConstantBuffer.world);
+	m_pMirror.Draw(m_pd3dImmediateContext, m_VSConstantBuffer,m_PSConstantBuffer);
+}
+void GameApp::DrawWall()
+{
+	m_VSConstantBuffer.isReflection = false;
+	m_pd3dImmediateContext->RSSetState(nullptr);
+	m_pd3dImmediateContext->OMSetDepthStencilState(nullptr, 0);
+	m_pd3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+
+	m_pWall.SetWorldMatrix(m_VSConstantBuffer.world);
+	m_pWall.Draw(m_pd3dImmediateContext, m_VSConstantBuffer,m_PSConstantBuffer);
+}
+
 
 bool GameApp::InitEffect() {
 	ComPtr<ID3DBlob> blob;
@@ -321,7 +344,10 @@ bool GameApp::InitEffect() {
 	HR(CreateShaderFromFile(L"HLSL\\Tex_PS.cso", L"HLSL\\Tex_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader_Tex.GetAddressOf()));
 
-
+	//mirror
+	//创建几何着色器
+	HR(CreateShaderFromFile(L"HLSL\\Mirror_GS.cso", L"HLSL\\Mirror_GS.hlsl", "GS", "gs_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(m_pd3dDevice->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pGeometryShader_Mirror.GetAddressOf()));
 
 	return true;
 }
@@ -329,37 +355,6 @@ bool GameApp::InitEffect() {
 bool GameApp::InitResource() {
 	// 创建对象，绘制类型为0、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、
 	name = new NameVertices(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	// // 设置三角形顶点
-	// VertexPosNormalColor* vertices1 = name->GetNameVertices(); // 通过对象获取顶点、、、、、、、、、、、、、、、、、、、、、
-	// // 设置顶点缓冲区描述
-	// D3D11_BUFFER_DESC vbd1;
-	// ZeroMemory(&vbd1, sizeof(vbd1));
-	// vbd1.Usage = D3D11_USAGE_IMMUTABLE;
-	// vbd1.ByteWidth = (sizeof * vertices1) * name->GetVerticesCount(); // 计算位宽、、、、、、、、、、、、、、、、、、、、、、、、、
-	// vbd1.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	// vbd1.CPUAccessFlags = 0;
-	// // 新建顶点缓冲区
-	// D3D11_SUBRESOURCE_DATA InitData1;
-	// ZeroMemory(&InitData1, sizeof(InitData1));
-	// InitData1.pSysMem = vertices1;
-	// HR(m_pd3dDevice->CreateBuffer(&vbd1, &InitData1, m_pVertexBuffer[0].GetAddressOf()));
-
-	// // 为第二种顶点类型创建顶点缓冲区
-	// VertexPosNormalTex* vertices2 = name->GetNameTexVertices();
-	// D3D11_BUFFER_DESC vbd2;
-	// ZeroMemory(&vbd2, sizeof(vbd2));
-	// vbd2.Usage = D3D11_USAGE_IMMUTABLE;
-	// vbd2.ByteWidth = sizeof(VertexPosNormalTex) * 4;
-	// vbd2.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	// vbd2.CPUAccessFlags = 0;
-	// D3D11_SUBRESOURCE_DATA InitData2;
-	// ZeroMemory(&InitData2, sizeof(InitData2));
-	// InitData2.pSysMem = vertices2;
-	// HR(m_pd3dDevice->CreateBuffer(&vbd2, &InitData2, m_pVertexBuffer[1].GetAddressOf())); // m_pVertexBuffer2是一个ID3D11Buffer指针
-
-
-
-
 
 	// ******************
 	// 初始化游戏对象
@@ -377,6 +372,23 @@ bool GameApp::InitResource() {
 	m_pName.SetShaderLayout(m_pVertexShader, m_pGeometryShader, m_pPixelShader, m_pVertexLayout);
 	m_pName.SetBuffer(m_pd3dDevice.Get(), name->GetNameVertices(), (UINT)name->GetVerticesCount(), name->GetNameIndices(), (UINT)name->GetIndexCount());
 
+	
+
+	//初始化墙面
+	m_pWall.isTex = true;
+	HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"assests\\wall.dds", nullptr, texture.GetAddressOf()));
+	m_pWall.SetTexture(texture.Get());
+	m_pWall.SetMaterial(material);
+	m_pWall.SetWorldMatrix(XMMatrixIdentity());
+	m_pWall.SetShaderLayout(m_pVertexShader_Tex, m_pGeometryShader_Mirror, m_pPixelShader_Tex, m_pVertexLayout_Tex);
+	m_pWall.SetBuffer(m_pd3dDevice.Get(), name->GetWallVertices(), (UINT)4, name->GetWallIndices(), (UINT)6);
+
+
+
+	
+	material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+	material.specular = XMFLOAT4(0.4f, 0.4f, 0.4f, 16.0f);
 	//初始化合照
 	m_pFace.isTex = true;
 	HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"assests\\4face.dds", nullptr, texture.GetAddressOf()));
@@ -385,23 +397,15 @@ bool GameApp::InitResource() {
 	m_pFace.SetWorldMatrix(XMMatrixIdentity());
 	m_pFace.SetShaderLayout(m_pVertexShader_Tex, m_pGeometryShader_Tex, m_pPixelShader_Tex, m_pVertexLayout_Tex);
 	m_pFace.SetBuffer(m_pd3dDevice.Get(), name->GetNameTexVertices(), (UINT)4, name->GetTexNameIndices(),(UINT) 6);
-	// ******************
-	// 索引数组
-	//
-	// WORD* indices = name->GetNameIndices(); // 通过对象获取索引、、、、、、、、、、、、、、、、、、、、、
-	
-	// // 设置索引缓冲区描述
-	// D3D11_BUFFER_DESC ibd1;
-	// ZeroMemory(&ibd1, sizeof(ibd1));
-	// ibd1.Usage = D3D11_USAGE_IMMUTABLE;
-	// ibd1.ByteWidth = (sizeof * indices) * name->GetIndexCount(); // 计算位宽、、、、、、、、、、、、、、、、、、、、、、、、、
-	// ibd1.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	// ibd1.CPUAccessFlags = 0;
-	// // 新建索引缓冲区
-	// InitData1.pSysMem = indices;
-	// HR(m_pd3dDevice->CreateBuffer(&ibd1, &InitData1, m_pIndexBuffer[0].GetAddressOf()));
+	//初始化镜面
+	m_pMirror.isTex = true;
+	HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"assests\\ice.dds", nullptr, texture.GetAddressOf()));
+	m_pMirror.SetTexture(texture.Get());
+	m_pMirror.SetMaterial(material);
+	m_pMirror.SetWorldMatrix(XMMatrixIdentity());
+	m_pMirror.SetShaderLayout(m_pVertexShader_Tex, m_pGeometryShader_Mirror, m_pPixelShader_Tex, m_pVertexLayout_Tex);
+	m_pMirror.SetBuffer(m_pd3dDevice.Get(), name->GetMirrorVertices(), (UINT)4, name->GetMirrorIndices(), (UINT)6);
 
-	
 
 
 	// ******************
@@ -417,6 +421,8 @@ bool GameApp::InitResource() {
 	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffers[0].GetAddressOf()));
 	cbd.ByteWidth = sizeof(PSConstantBuffer);
 	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffers[1].GetAddressOf()));
+
+	m_PSConstantBuffer.reflect = XMMatrixTranspose(XMMatrixReflect(XMVectorSet(0.0f, 0.0f, -1.0f, 100.0f)));
 
 	// ******************
 	// 初始化默认光照
@@ -451,7 +457,7 @@ bool GameApp::InitResource() {
 	m_VSConstantBuffer.view = XMMatrixTranspose(XMMatrixTranslation(-viewPos.x, -viewPos.y, -viewPos.z) * XMMatrixRotationY(-viewRot.y) * XMMatrixRotationZ(-viewRot.z) * XMMatrixRotationX(-viewRot.x));
 	m_VSConstantBuffer.proj = XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));
 	m_VSConstantBuffer.worldInvTranspose = XMMatrixIdentity();
-
+	m_VSConstantBuffer.isReflection = 0;
 	// 初始化用于PS的常量缓冲区的值
 	m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -469,7 +475,7 @@ bool GameApp::InitResource() {
 	// 更新PS常量缓冲区资源
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_VSConstantBuffer, sizeof(PSConstantBuffer));
+	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
 	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[1].Get(), 0);
 
 	// ******************
@@ -490,42 +496,20 @@ bool GameApp::InitResource() {
 	// 给渲染管线各个阶段绑定好所需资源
 	//
 
-	// 输入装配阶段的顶点缓冲区设置
-	// UINT stride = sizeof(VertexPosNormalColor);	// 跨越字节数
-	// UINT offset = 0;						// 起始偏移量
-	// m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer[0].GetAddressOf(), &stride, &offset);
-	// m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer[1].GetAddressOf(), &stride, &offset);
 	// 设置图元类型，设定输入布局
 	m_pd3dImmediateContext->IASetPrimitiveTopology(name->GetTopology());// 通过对象设置图元类型、、、、、、、、、、、、、、、、、、、、、
-	// m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
-	// 将着色器绑定到渲染管线
-	// m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
 	// VS常量缓冲区对应HLSL寄存于b0的常量缓冲区
 	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, m_pConstantBuffers[0].GetAddressOf());
+	m_pd3dImmediateContext->VSSetConstantBuffers(1, 1, m_pConstantBuffers[1].GetAddressOf());
 	// GS常量缓冲区对应HLSL寄存于b0的常量缓冲区
 	// m_pd3dImmediateContext->GSSetShader(m_pGeometryShader.Get(), nullptr, 0);
 	m_pd3dImmediateContext->GSSetConstantBuffers(0, 1, m_pConstantBuffers[0].GetAddressOf());
+	m_pd3dImmediateContext->GSSetConstantBuffers(1, 1, m_pConstantBuffers[1].GetAddressOf());
 	// PS常量缓冲区对应HLSL寄存于b1的常量缓冲区
+	m_pd3dImmediateContext->PSSetConstantBuffers(0, 1, m_pConstantBuffers[0].GetAddressOf());
 	m_pd3dImmediateContext->PSSetConstantBuffers(1, 1, m_pConstantBuffers[1].GetAddressOf());
 	// PS采样器对应位图资源寄存于s0的采样器
 	m_pd3dImmediateContext->PSSetSamplers(0, 1, m_pSamplerState.GetAddressOf());
-	// 位图资源在draw中绑定
-	// m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
-
-
-
-	// ******************
-	// 设置调试对象名
-	//
-	// D3D11SetDebugObjectName(m_pVertexBuffer[0].Get(), "VertexBuffer");
-	// D3D11SetDebugObjectName(m_pVertexBuffer[1].Get(), "VertexBuffer");
-	// D3D11SetDebugObjectName(m_pIndexBuffer[0].Get(), "IndexBuffer");
-	// D3D11SetDebugObjectName(m_pIndexBuffer[1].Get(), "IndexBuffer");
-	// D3D11SetDebugObjectName(m_pVertexLayout.Get(), "VertexPosNormalTexLayout");
-	// D3D11SetDebugObjectName(m_pConstantBuffers[0].Get(), "VSConstantBuffer");
-	// D3D11SetDebugObjectName(m_pConstantBuffers[1].Get(), "PSConstantBuffer");
-	// D3D11SetDebugObjectName(m_pVertexShader.Get(), "Light_VS");
-	// D3D11SetDebugObjectName(m_pPixelShader.Get(), "Light_PS");
 
 	return true;
 }
@@ -603,42 +587,38 @@ void GameApp::GameObject::SetShaderLayout(const ComPtr<ID3D11VertexShader> VS, c
 	m_PS = PS;
 	m_IL = IL;
 }
-void GameApp::GameObject::Draw(ComPtr<ID3D11DeviceContext> deviceContext,VSConstantBuffer m_VSConstantBuffer) {
+void GameApp::GameObject::Draw(ComPtr<ID3D11DeviceContext> deviceContext,VSConstantBuffer& m_VSConstantBuffer,PSConstantBuffer& m_PSConstantBuffer) {
 	// 设置顶点/索引缓冲区
 	UINT strides = m_VertexStride;
 	UINT offsets = 0;
 	deviceContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &strides, &offsets);
 	deviceContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-
 	// 获取之前已经绑定到渲染管线上的常量缓冲区并进行修改
 	ComPtr<ID3D11Buffer> cBuffer = nullptr;
 	deviceContext->VSGetConstantBuffers(0, 1, cBuffer.GetAddressOf());
-	// XMMATRIX W = XMLoadFloat4x4(&m_WorldMatrix);
-	// VSConstantBuffer cbDrawing;
-	// cbDrawing.world = XMMatrixTranspose(W);
-	// cbDrawing.worldInvTranspose = XMMatrixInverse(nullptr, W);
-	// cbDrawing.view = m_VSConstantBuffer.view;
-	// cbDrawing.proj = m_VSConstantBuffer.proj;
-
 	// 更新常量缓冲区
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	HR(deviceContext->Map(cBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(VSConstantBuffer), &m_VSConstantBuffer, sizeof(VSConstantBuffer));
 	deviceContext->Unmap(cBuffer.Get(), 0);
 
+	deviceContext->PSGetConstantBuffers(1, 1, cBuffer.GetAddressOf());
+	m_PSConstantBuffer.material = m_Material;
+	HR(deviceContext->Map(cBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
+	deviceContext->Unmap(cBuffer.Get(), 0);
+
+
+
 	//更改着色器 顶点布局
 	deviceContext->IASetInputLayout(m_IL.Get());
 	deviceContext->VSSetShader(m_VS.Get(), nullptr, 0);
 	deviceContext->GSSetShader(m_GS.Get(), nullptr, 0);
 	deviceContext->PSSetShader(m_PS.Get(), nullptr, 0);
-
-
 	// 设置纹理 判断
 	if (isTex) {
 		deviceContext->PSSetShaderResources(0, 1, m_pTexture.GetAddressOf());
 	}
-
-
 	// 可以开始绘制
 	deviceContext->DrawIndexed(m_IndexCount, 0, 0);
 }

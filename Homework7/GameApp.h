@@ -61,6 +61,7 @@ public:
 		DirectionalLight dirlight3;
 		DirectionalLight dirlight4;
 		DirectionalLight dirlight5;
+		DirectX::XMMATRIX reflect;
 	};
 
 	class GameObject
@@ -82,7 +83,7 @@ public:
 		void SetWorldMatrix(const DirectX::XMFLOAT4X4& world);
 		void XM_CALLCONV SetWorldMatrix(DirectX::FXMMATRIX world);
 		// 绘制
-		void Draw(ComPtr<ID3D11DeviceContext> deviceContext,VSConstantBuffer m_VSConstantBuffer);
+		void Draw(ComPtr<ID3D11DeviceContext> deviceContext,VSConstantBuffer& m_VSConstantBuffer,PSConstantBuffer& m_PSConstantBuffer);
 
 		// 设置调试对象名
 		// 若缓冲区被重新设置，调试对象名也需要被重新设置
@@ -117,9 +118,11 @@ public:
 private:
 	bool InitEffect();
 	bool InitResource();
-	void DrawName();
-	void DrawPic();
+	void DrawForest(bool isReflection);
+	void DrawName(bool isReflection);
+	void DrawPic(bool isReflection);
 	void DrawMirror();
+	void DrawWall();
 
 
 private:
@@ -137,11 +140,15 @@ private:
 	ComPtr<ID3D11PixelShader> m_pPixelShader_Tex;		// 像素着色器2
 	ComPtr<ID3D11GeometryShader> m_pGeometryShader_Tex; // 几何着色器2
 
+	ComPtr<ID3D11GeometryShader> m_pGeometryShader_Mirror; // 几何着色器3
+
 	VSConstantBuffer m_VSConstantBuffer;			// 用于修改用于VS的GPU常量缓冲区的变量
 	PSConstantBuffer m_PSConstantBuffer;			// 用于修改用于PS的GPU常量缓冲区的变量
 
 	GameObject m_pFace;			    // 脸纹理
 	GameObject m_pName;				// 名字
+	GameObject m_pMirror; 			// 镜子
+	GameObject m_pWall; 				// 墙
 	ComPtr<ID3D11SamplerState> m_pSamplerState;				    // 采样器状态
 	
 	DirectionalLight m_DirLight1;					// 五个方向光
