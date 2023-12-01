@@ -6,9 +6,9 @@ cmake_install.cmake
 Makefile
 
 # Visual Studio files
-*.sln
-*.vcxproj
-*.vcxproj.filters
+
+
+
 *.vcxproj.user
 
 # Compiled object files
