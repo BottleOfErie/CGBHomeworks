@@ -5371,10 +5371,10 @@ DirectX::XMFLOAT3(49.98f,10.0f,-10.0f),DirectX::XMFLOAT3(-1.0f,0.0f,0.0f), Direc
 	}; // 顶点
 	
 	GameApp::VertexPosNormalTex* mirrorVertices = new GameApp::VertexPosNormalTex[1000]{
-		DirectX::XMFLOAT3(-50.0f,100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(0.0f, 0.0f),
-		DirectX::XMFLOAT3(-50.0f,-100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(0.0f, 1.0f),
-		DirectX::XMFLOAT3(150.0f,-100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(1.0f, 1.0f),
-		DirectX::XMFLOAT3(150.0f,100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(1.0f,0.0f),
+		DirectX::XMFLOAT3(-50.0f,100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,1.0f), DirectX::XMFLOAT2(0.0f, 0.0f),
+		DirectX::XMFLOAT3(-50.0f,-100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,1.0f), DirectX::XMFLOAT2(0.0f, 1.0f),
+		DirectX::XMFLOAT3(150.0f,-100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,1.0f), DirectX::XMFLOAT2(1.0f, 1.0f),
+		DirectX::XMFLOAT3(150.0f,100.0f,100.0f),DirectX::XMFLOAT3(0.0f,0.0f,1.0f), DirectX::XMFLOAT2(1.0f,0.0f),
 	}; // 顶点
 	GameApp::VertexPosNormalTex* wallVertices = new GameApp::VertexPosNormalTex[1000]{
 		DirectX::XMFLOAT3(-100.0f,150.0f,102.0f),DirectX::XMFLOAT3(0.0f,0.0f,-1.0f), DirectX::XMFLOAT2(0.0f, 0.0f),

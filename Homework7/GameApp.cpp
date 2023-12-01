@@ -188,9 +188,9 @@ void GameApp::DrawScene() {
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), reinterpret_cast<const float*>(&Colors::Black));
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	// m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	// m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	// m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 100.0f);
+	m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 100.0f);
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
@@ -223,7 +223,7 @@ void GameApp::DrawForest(bool isReflection)
 			float scale = (sinf(angle * 3.0f + i * j * 0.2f) + 1.3f) * 0.15f;
 			DirectX::XMMATRIX mScale = XMMatrixScaling(scale, scale, scale);
 			DirectX::XMMATRIX mRotate = XMMatrixRotationX(angle) * XMMatrixRotationY(angle);
-			DirectX::XMMATRIX mTranslate = XMMatrixTranslation((i - (nameN + 1) / 2.0f) * 4.5f * 4 * 0.5, 0, (j - (nameN + 1) / 2.0f) * 4.5f * 4 * 0.5);
+			DirectX::XMMATRIX mTranslate = XMMatrixTranslation((i - (nameN + 1) / 2.0f) * 4.5f * 4.0f * 0.5f, 0, (j - (nameN + 1) / 2.0f) * 4.5f * 4.0f * 0.5f);
 			m_VSConstantBuffer.world = XMMatrixTranspose(mScale * mRotate * mTranslate); // mul(vec, mat) 中为行向量，矩阵右乘，顺序SRT, 参考https://www.cnblogs.com/X-Jun/p/9808727.html#_lab2_1_1
 			m_VSConstantBuffer.worldInvTranspose = XMMatrixInverse(nullptr, XMMatrixTranspose(m_VSConstantBuffer.world));
 			DrawName(isReflection);
@@ -274,20 +274,29 @@ void GameApp::DrawPic(bool isReflection)
 		m_pd3dImmediateContext->OMSetDepthStencilState(RenderStates::DSSDrawWithStencil.Get(), 1);
 		m_pd3dImmediateContext->OMSetBlendState(RenderStates::BSTransparent.Get(), nullptr, 0xFFFFFFFF);
 
+		m_pd3dImmediateContext->RSSetState(RenderStates::RSNoCull.Get());
+		m_pd3dImmediateContext->OMSetDepthStencilState(RenderStates::DSSDrawWithStencil.Get(), 1);
+		m_pd3dImmediateContext->OMSetBlendState(RenderStates::BSTransparent.Get(), nullptr, 0xFFFFFFFF);
+
+		m_pFace.SetWorldMatrix(m_VSConstantBuffer.world);
+		m_pFace.Draw(m_pd3dImmediateContext,m_VSConstantBuffer,m_PSConstantBuffer);
+
 		m_pMirror.SetWorldMatrix(m_VSConstantBuffer.world);
 		m_pMirror.Draw(m_pd3dImmediateContext, m_VSConstantBuffer,m_PSConstantBuffer);
 		
 	}
-	else{
+	else
+	{
 		m_VSConstantBuffer.isReflection = false;
 		m_pd3dImmediateContext->RSSetState(RenderStates::RSNoCull.Get());
 		m_pd3dImmediateContext->OMSetDepthStencilState(nullptr, 0);
 		m_pd3dImmediateContext->OMSetBlendState(RenderStates::BSTransparent.Get(), nullptr, 0xFFFFFFFF);
+		m_pFace.SetWorldMatrix(m_VSConstantBuffer.world);
+		m_pFace.Draw(m_pd3dImmediateContext,m_VSConstantBuffer,m_PSConstantBuffer);
 	}
 	
 
-	m_pFace.SetWorldMatrix(m_VSConstantBuffer.world);
-	m_pFace.Draw(m_pd3dImmediateContext,m_VSConstantBuffer,m_PSConstantBuffer);
+	
 }
 void GameApp::DrawMirror() 
 {
