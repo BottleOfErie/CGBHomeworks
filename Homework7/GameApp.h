@@ -139,7 +139,7 @@ private:
 	ComPtr<ID3D11VertexShader> m_pVertexShader_Tex;	    // 顶点着色器2
 	ComPtr<ID3D11PixelShader> m_pPixelShader_Tex;		// 像素着色器2
 	ComPtr<ID3D11GeometryShader> m_pGeometryShader_Tex; // 几何着色器2
-
+	ComPtr<ID3D11GeometryShader> m_pGeometryShader_otherWall;//另一面墙
 	ComPtr<ID3D11GeometryShader> m_pGeometryShader_Mirror; // 几何着色器3
 
 	VSConstantBuffer m_VSConstantBuffer;			// 用于修改用于VS的GPU常量缓冲区的变量
@@ -149,6 +149,7 @@ private:
 	GameObject m_pName;				// 名字
 	GameObject m_pMirror; 			// 镜子
 	GameObject m_pWall; 				// 墙
+	GameObject m_pWall2;
 	ComPtr<ID3D11SamplerState> m_pSamplerState;				    // 采样器状态
 	
 	DirectionalLight m_DirLight1;					// 五个方向光
