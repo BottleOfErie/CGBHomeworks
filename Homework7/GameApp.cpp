@@ -206,10 +206,10 @@ void GameApp::DrawScene() {
 	DrawForest(true);
 	DrawPic(true);
 
-	DrawWall();
-
-	DrawForest(false);	
+	DrawForest(false);
 	DrawPic(false);
+	DrawWall();
+	
 
 	HR(m_pSwapChain->Present(0, 0));
 }
@@ -319,6 +319,8 @@ void GameApp::DrawWall()
 
 	m_pWall.SetWorldMatrix(m_VSConstantBuffer.world);
 	m_pWall.Draw(m_pd3dImmediateContext, m_VSConstantBuffer,m_PSConstantBuffer);
+	m_pWall2.SetWorldMatrix(m_VSConstantBuffer.world);
+	m_pWall2.Draw(m_pd3dImmediateContext, m_VSConstantBuffer, m_PSConstantBuffer);
 }
 
 
@@ -357,7 +359,11 @@ bool GameApp::InitEffect() {
 	//创建几何着色器
 	HR(CreateShaderFromFile(L"HLSL\\Mirror_GS.cso", L"HLSL\\Mirror_GS.hlsl", "GS", "gs_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pGeometryShader_Mirror.GetAddressOf()));
-
+	//另一面墙
+	//创建几何着色器
+	HR(CreateShaderFromFile(L"HLSL\\OtherWall.cso", L"HLSL\\otherwall.hlsl", "GS", "gs_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(m_pd3dDevice->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pGeometryShader_otherWall.GetAddressOf()));
+	
 	return true;
 }
 
@@ -392,7 +398,13 @@ bool GameApp::InitResource() {
 	m_pWall.SetShaderLayout(m_pVertexShader_Tex, m_pGeometryShader_Mirror, m_pPixelShader_Tex, m_pVertexLayout_Tex);
 	m_pWall.SetBuffer(m_pd3dDevice.Get(), name->GetWallVertices(), (UINT)4, name->GetWallIndices(), (UINT)6);
 
-
+	m_pWall2.isTex = true;
+	HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"assests\\wall.dds", nullptr, texture.GetAddressOf()));
+	m_pWall2.SetTexture(texture.Get());
+	m_pWall2.SetMaterial(material);
+	m_pWall2.SetWorldMatrix(XMMatrixIdentity());
+	m_pWall2.SetShaderLayout(m_pVertexShader_Tex, m_pGeometryShader_otherWall, m_pPixelShader_Tex, m_pVertexLayout_Tex);
+	m_pWall2.SetBuffer(m_pd3dDevice.Get(), name->GetWallVertices(), (UINT)4, name->GetWallIndices(), (UINT)6);
 
 	
 	material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
